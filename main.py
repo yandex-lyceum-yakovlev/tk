@@ -7,8 +7,20 @@ class Snake:
     segments = [[2, 2], [2, 3], [2, 4]]
 
     def move(self):
-        for p in self.segments:
-            p[1] += 1
+        self.segments = self.segments[1:] + [[self.segments[-1][0] + self.dy, self.segments[-1][1] + self.dx]]
+        # for p in self.segments:
+        #     p[0] += self.dy
+        #     p[1] += self.dx
+
+    def key_press(self, event):
+        if event.keysym == "Up":
+            self.dx, self.dy = 0, -1
+        if event.keysym == "Down":
+            self.dx, self.dy = 0, 1
+        if event.keysym == "Left":
+            self.dx, self.dy = -1, 0
+        if event.keysym == "Right":
+            self.dx, self.dy = 1, 0
 
 
 def draw(board, snake):
@@ -41,7 +53,7 @@ c.pack()
 board = [["gray"] * m for i in range(n)]
 snake = Snake()
 draw(board, snake)
-
+window.bind_all('<KeyPress>', snake.key_press)
 window.after(1000, f)
 
 window.mainloop()
