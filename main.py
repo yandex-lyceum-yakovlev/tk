@@ -1,4 +1,5 @@
 import tkinter
+from random import randint
 
 
 class Snake:
@@ -7,10 +8,14 @@ class Snake:
     segments = [[2, 2], [2, 3], [2, 4]]
 
     def move(self):
+        global apple_i, apple_j
+        if (self.segments[-1][0] + self.dy, self.segments[-1][1] + self.dx) == (apple_j, apple_i):
+            self.segments.append([apple_j, apple_i])
+            apple_i = randint(0, n)
+            apple_j = randint(0, m)
         self.segments = self.segments[1:] + [[self.segments[-1][0] + self.dy, self.segments[-1][1] + self.dx]]
-        # for p in self.segments:
-        #     p[0] += self.dy
-        #     p[1] += self.dx
+        if not (0 <= self.segments[-1][0] < n) or not (0 <= self.segments[-1][1] < m):
+            exit()
 
     def key_press(self, event):
         if event.keysym == "Up":
@@ -35,11 +40,15 @@ def draw(board, snake):
     c.create_rectangle(j * cell_height, i * cell_width, (j + 1) * cell_height, (i + 1) * cell_width,
                        fill="red")
 
+    c.create_rectangle(apple_i * cell_height, apple_j * cell_width,
+                       (apple_i + 1) * cell_height, (apple_j + 1) * cell_width,
+                       fill="yellow")
+
 
 def f():
-    draw(board, snake)
     snake.move()
-    window.after(1000, f)
+    draw(board, snake)
+    window.after(500, f)
 
 
 window = tkinter.Tk()
@@ -50,6 +59,9 @@ cell_height = height // n
 c = tkinter.Canvas(window, width=width, height=height, bg='white')
 c.pack()
 
+apple_i = randint(0, n)
+apple_j = randint(0, m)
+print(apple_i, apple_j)
 board = [["gray"] * m for i in range(n)]
 snake = Snake()
 draw(board, snake)
